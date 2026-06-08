@@ -32,6 +32,83 @@
     overscroll-behavior: none;
   }
 
+  /* SETUP SCREEN */
+  .setup-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 32px 24px;
+    text-align: center;
+  }
+  .setup-screen h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    font-weight: 400;
+    margin-bottom: 8px;
+  }
+  .setup-screen p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 32px;
+    max-width: 320px;
+  }
+  .setup-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    width: 100%;
+    max-width: 360px;
+    text-align: left;
+  }
+  .setup-card label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .setup-card input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+  .setup-card input:focus { border-color: var(--accent); }
+  .setup-card .hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: -10px;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .setup-btn {
+    background: var(--accent);
+    color: #0f0f0f;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: opacity 0.2s;
+  }
+  .setup-btn:active { opacity: 0.8; }
+
+  /* NAV */
   .nav {
     display: flex;
     background: var(--surface);
@@ -115,7 +192,6 @@
     margin-bottom: 20px;
   }
   .month-toggle button { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; padding: 0 8px; }
-  .month-toggle button:hover { color: var(--text); }
   .month-toggle .month-label { font-weight: 500; font-size: 14px; }
 
   .section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 10px; }
@@ -142,7 +218,6 @@
   .empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
   .empty .icon { font-size: 36px; margin-bottom: 10px; }
 
-  /* LOG FORM */
   .log-form {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -212,12 +287,10 @@
     cursor: pointer;
     width: 100%;
     transition: opacity 0.2s;
-    position: relative;
   }
   .submit-btn:active { opacity: 0.8; }
   .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  /* IMPORT */
   .import-wrap {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -256,7 +329,6 @@
   .preview-date { font-size: 11px; color: var(--muted); }
   .preview-amt { font-weight: 500; color: var(--accent2); }
 
-  /* STATUS BAR */
   .status-bar {
     background: var(--surface2);
     border: 1px solid var(--border);
@@ -275,7 +347,6 @@
   .status-dot.loading { background: var(--accent2); animation: pulse 1s infinite; }
   @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
 
-  /* TOAST */
   .toast {
     position: fixed;
     bottom: 88px;
@@ -307,156 +378,231 @@
     margin-right: 6px;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  .settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-label { font-size: 14px; }
+  .settings-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .settings-action {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .settings-action.danger { border-color: var(--danger); color: var(--danger); }
 </style>
 </head>
 <body>
 
-<nav class="nav">
-  <button class="nav-btn active" onclick="showPage('home',this)">Overview</button>
-  <button class="nav-btn" onclick="showPage('log',this)">+ Log</button>
-  <button class="nav-btn" onclick="showPage('entries',this)">Entries</button>
-  <button class="nav-btn" onclick="showPage('import',this)">Import</button>
-</nav>
-
-<!-- HOME -->
-<div class="page active" id="page-home">
-  <div class="page-header">
-    <h1 id="home-title">June 2026</h1>
-    <p>Personal spending overview</p>
-  </div>
-  <div class="status-bar"><div class="status-dot" id="home-dot"></div><span id="home-status">Loading...</span></div>
-  <div class="summary-row">
-    <div class="summary-card">
-      <div class="label">My Spends</div>
-      <div class="amount" id="stat-personal"><span>MXN </span>0</div>
-      <div class="sub" id="stat-personal-count">0 entries</div>
-    </div>
-    <div class="summary-card">
-      <div class="label">Splitwise</div>
-      <div class="amount" id="stat-splitwise"><span>MXN </span>0</div>
-      <div class="sub" id="stat-splitwise-count">0 entries</div>
-    </div>
-    <div class="summary-card full">
-      <div class="label">Total This Month</div>
-      <div class="amount" id="stat-total"><span>MXN </span>0</div>
-      <div class="sub" id="stat-total-sub">—</div>
-    </div>
-  </div>
-  <div class="chart-wrap">
-    <div class="chart-title">By Category</div>
-    <div class="bar-chart" id="bar-chart"><div style="color:var(--muted);font-size:13px;text-align:center;padding:10px;">Loading...</div></div>
-  </div>
-  <div class="chart-wrap">
-    <div class="chart-title">Distribution</div>
-    <div class="donut-wrap"><canvas id="donut-canvas" width="160" height="160"></canvas></div>
-    <div class="donut-legend" id="donut-legend"></div>
+<!-- SETUP SCREEN -->
+<div id="setup-screen" class="setup-screen" style="display:none;">
+  <h1>Budget Tracker</h1>
+  <p>Enter your Google Sheets API key to get started. It's stored locally on your device and never sent anywhere else.</p>
+  <div class="setup-card">
+    <label>Google Sheets API Key</label>
+    <input type="text" id="setup-api-key" placeholder="AIza...">
+    <p class="hint">Get this from Google Cloud Console → APIs & Services → Credentials</p>
+    <label>Sheet ID</label>
+    <input type="text" id="setup-sheet-id" placeholder="1dh4L...">
+    <p class="hint">The long ID from your Google Sheet URL: docs.google.com/spreadsheets/d/<strong>ID</strong>/edit</p>
+    <button class="setup-btn" onclick="saveSetup()">Connect Sheet</button>
   </div>
 </div>
 
-<!-- LOG -->
-<div class="page" id="page-log">
-  <div class="page-header">
-    <h1>Log a Spend</h1>
-    <p>Quick entry — takes 10 seconds</p>
-  </div>
-  <div class="log-form">
-    <div class="amount-input-wrap">
-      <div class="currency-tag" id="currency-display">MXN</div>
-      <input class="amount-big" type="number" id="amount-input" placeholder="0" inputmode="decimal">
+<!-- MAIN APP -->
+<div id="main-app" style="display:none;">
+  <nav class="nav">
+    <button class="nav-btn active" onclick="showPage('home',this)">Overview</button>
+    <button class="nav-btn" onclick="showPage('log',this)">+ Log</button>
+    <button class="nav-btn" onclick="showPage('entries',this)">Entries</button>
+    <button class="nav-btn" onclick="showPage('import',this)">Import</button>
+    <button class="nav-btn" onclick="showPage('settings',this)">⚙️</button>
+  </nav>
+
+  <!-- HOME -->
+  <div class="page active" id="page-home">
+    <div class="page-header">
+      <h1 id="home-title">June 2026</h1>
+      <p>Personal spending overview</p>
     </div>
-    <div class="field-row">
-      <div class="field">
-        <label>Currency</label>
-        <select id="currency-select" onchange="document.getElementById('currency-display').textContent=this.value">
-          <option>MXN</option>
-          <option>GTQ</option>
-          <option>USD</option>
-          <option>EUR</option>
-        </select>
+    <div class="status-bar"><div class="status-dot" id="home-dot"></div><span id="home-status">Loading...</span></div>
+    <div class="summary-row">
+      <div class="summary-card">
+        <div class="label">My Spends</div>
+        <div class="amount" id="stat-personal"><span>MXN </span>0</div>
+        <div class="sub" id="stat-personal-count">0 entries</div>
       </div>
-      <div class="field">
-        <label>Date</label>
-        <input type="date" id="date-input">
+      <div class="summary-card">
+        <div class="label">Splitwise</div>
+        <div class="amount" id="stat-splitwise"><span>MXN </span>0</div>
+        <div class="sub" id="stat-splitwise-count">0 entries</div>
+      </div>
+      <div class="summary-card full">
+        <div class="label">Total This Month</div>
+        <div class="amount" id="stat-total"><span>MXN </span>0</div>
+        <div class="sub" id="stat-total-sub">—</div>
       </div>
     </div>
-    <div class="field">
-      <label>Description</label>
-      <input type="text" id="desc-input" placeholder="e.g. Tacos en el mercado">
+    <div class="chart-wrap">
+      <div class="chart-title">By Category</div>
+      <div class="bar-chart" id="bar-chart"><div style="color:var(--muted);font-size:13px;text-align:center;padding:10px;">Loading...</div></div>
     </div>
-    <div class="field">
-      <label>Category</label>
-      <div class="cat-grid" id="cat-grid"></div>
+    <div class="chart-wrap">
+      <div class="chart-title">Distribution</div>
+      <div class="donut-wrap"><canvas id="donut-canvas" width="160" height="160"></canvas></div>
+      <div class="donut-legend" id="donut-legend"></div>
     </div>
-    <div class="field">
-      <label>Notes (optional)</label>
-      <input type="text" id="notes-input" placeholder="e.g. Airport, work trip...">
-    </div>
-    <button class="submit-btn" id="save-btn" onclick="logSpend()">Save Spend</button>
   </div>
-</div>
 
-<!-- ENTRIES -->
-<div class="page" id="page-entries">
-  <div class="page-header">
-    <h1>All Entries</h1>
-    <p>Tap × to delete an entry</p>
-  </div>
-  <div class="month-toggle">
-    <button onclick="changeMonth(-1)">‹</button>
-    <span class="month-label" id="entries-month-label">June 2026</span>
-    <button onclick="changeMonth(1)">›</button>
-  </div>
-  <div class="section-title">Personal</div>
-  <div class="entry-list" id="personal-list"></div>
-  <div class="section-title">From Splitwise</div>
-  <div class="entry-list" id="splitwise-list"></div>
-</div>
-
-<!-- IMPORT -->
-<div class="page" id="page-import">
-  <div class="page-header">
-    <h1>Import Splitwise</h1>
-    <p>Monthly CSV drop</p>
-  </div>
-  <div class="import-wrap">
-    <p>Export your Splitwise group CSV and upload here. Your share of every split gets added automatically — payments and préstamos are skipped.</p>
-    <input type="file" id="csv-input" accept=".csv" onchange="importCSV(this)">
-    <button class="import-btn" onclick="document.getElementById('csv-input').click()">📂 Upload Splitwise CSV</button>
-  </div>
-  <div class="chart-wrap">
-    <div class="chart-title">Your name in Splitwise</div>
-    <div class="field" style="margin-top:4px;">
-      <input type="text" id="sw-name-input" placeholder="e.g. Luis Pablo" value="Luis Pablo">
-      <p style="font-size:11px;color:var(--muted);margin-top:8px;">Must match your column header in the CSV exactly.</p>
+  <!-- LOG -->
+  <div class="page" id="page-log">
+    <div class="page-header">
+      <h1>Log a Spend</h1>
+      <p>Quick entry — takes 10 seconds</p>
+    </div>
+    <div class="log-form">
+      <div class="amount-input-wrap">
+        <div class="currency-tag" id="currency-display">MXN</div>
+        <input class="amount-big" type="number" id="amount-input" placeholder="0" inputmode="decimal">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Currency</label>
+          <select id="currency-select" onchange="document.getElementById('currency-display').textContent=this.value">
+            <option>MXN</option>
+            <option>GTQ</option>
+            <option>USD</option>
+            <option>EUR</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Date</label>
+          <input type="date" id="date-input">
+        </div>
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <input type="text" id="desc-input" placeholder="e.g. Tacos en el mercado">
+      </div>
+      <div class="field">
+        <label>Category</label>
+        <div class="cat-grid" id="cat-grid"></div>
+      </div>
+      <div class="field">
+        <label>Notes (optional)</label>
+        <input type="text" id="notes-input" placeholder="e.g. Airport, work trip...">
+      </div>
+      <button class="submit-btn" id="save-btn" onclick="logSpend()">Save Spend</button>
     </div>
   </div>
-  <div class="chart-wrap" id="import-preview" style="display:none;">
-    <div class="chart-title">Last import preview</div>
-    <div id="import-preview-content"></div>
+
+  <!-- ENTRIES -->
+  <div class="page" id="page-entries">
+    <div class="page-header">
+      <h1>All Entries</h1>
+      <p>Tap × to delete an entry</p>
+    </div>
+    <div class="month-toggle">
+      <button onclick="changeMonth(-1)">‹</button>
+      <span class="month-label" id="entries-month-label">June 2026</span>
+      <button onclick="changeMonth(1)">›</button>
+    </div>
+    <div class="section-title">Personal</div>
+    <div class="entry-list" id="personal-list"></div>
+    <div class="section-title">From Splitwise</div>
+    <div class="entry-list" id="splitwise-list"></div>
+  </div>
+
+  <!-- IMPORT -->
+  <div class="page" id="page-import">
+    <div class="page-header">
+      <h1>Import Splitwise</h1>
+      <p>Monthly CSV drop</p>
+    </div>
+    <div class="import-wrap">
+      <p>Export your Splitwise group CSV and upload here. Your share of every split gets added automatically — payments and préstamos are skipped.</p>
+      <input type="file" id="csv-input" accept=".csv" onchange="importCSV(this)">
+      <button class="import-btn" onclick="document.getElementById('csv-input').click()">📂 Upload Splitwise CSV</button>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">Your name in Splitwise</div>
+      <div class="field" style="margin-top:4px;">
+        <input type="text" id="sw-name-input" placeholder="e.g. Luis Pablo" value="Luis Pablo">
+        <p style="font-size:11px;color:var(--muted);margin-top:8px;">Must match your column header in the CSV exactly.</p>
+      </div>
+    </div>
+    <div class="chart-wrap" id="import-preview" style="display:none;">
+      <div class="chart-title">Last import preview</div>
+      <div id="import-preview-content"></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="page" id="page-settings">
+    <div class="page-header">
+      <h1>Settings</h1>
+      <p>Manage your connection</p>
+    </div>
+    <div class="chart-wrap">
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">API Key</div>
+          <div class="settings-sub" id="settings-key-preview">—</div>
+        </div>
+        <button class="settings-action" onclick="resetSetup()">Change</button>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Sheet ID</div>
+          <div class="settings-sub" id="settings-sheet-preview">—</div>
+        </div>
+        <button class="settings-action" onclick="resetSetup()">Change</button>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Open Sheet</div>
+          <div class="settings-sub">View raw data in Google Sheets</div>
+        </div>
+        <button class="settings-action" onclick="openSheet()">Open ↗</button>
+      </div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-label">Clear all local data</div>
+          <div class="settings-sub">Resets connection settings</div>
+        </div>
+        <button class="settings-action danger" onclick="clearAll()">Reset</button>
+      </div>
+    </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────────────────────────
-const SHEET_ID  = '1dh4L4BKD_ezFk9-c6ilaPervntzoCu7v5xrKs77I0W8';
-const API_KEY   = 'AIzaSyAK5jJjiobOh-NoG1-TuOSHpMgCKvgmSyA';
 const SHEET_NAME = 'Entries';
-const BASE = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}`;
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-// ── CATEGORIES ──────────────────────────────────────────────────────────────
 const CATEGORIES = [
-  { id:'housing',       emoji:'🏠', name:'Housing',      color:'#7eb8f7' },
-  { id:'groceries',     emoji:'🛒', name:'Groceries',    color:'#7ef7b0' },
-  { id:'eating',        emoji:'🍽️', name:'Eating Out',   color:'#f7c97e' },
-  { id:'transport',     emoji:'🚌', name:'Transport',    color:'#c47ef7' },
-  { id:'entertainment', emoji:'🎉', name:'Fun',          color:'#f77eb8' },
-  { id:'home',          emoji:'🧹', name:'Home',         color:'#7ef7f0' },
-  { id:'subscriptions', emoji:'📱', name:'Subs',         color:'#f7f07e' },
-  { id:'health',        emoji:'🏥', name:'Health',       color:'#f79e7e' },
-  { id:'shopping',      emoji:'🛍️', name:'Shopping',     color:'#b8f77e' },
-  { id:'travel',        emoji:'✈️', name:'Travel',       color:'#7eaff7' },
+  { id:'housing',       emoji:'🏠', name:'Housing',    color:'#7eb8f7' },
+  { id:'groceries',     emoji:'🛒', name:'Groceries',  color:'#7ef7b0' },
+  { id:'eating',        emoji:'🍽️', name:'Eating Out', color:'#f7c97e' },
+  { id:'transport',     emoji:'🚌', name:'Transport',  color:'#c47ef7' },
+  { id:'entertainment', emoji:'🎉', name:'Fun',        color:'#f77eb8' },
+  { id:'home',          emoji:'🧹', name:'Home',       color:'#7ef7f0' },
+  { id:'subscriptions', emoji:'📱', name:'Subs',       color:'#f7f07e' },
+  { id:'health',        emoji:'🏥', name:'Health',     color:'#f79e7e' },
+  { id:'shopping',      emoji:'🛍️', name:'Shopping',   color:'#b8f77e' },
+  { id:'travel',        emoji:'✈️', name:'Travel',     color:'#7eaff7' },
 ];
 
 const SW_CAT_MAP = {
@@ -474,331 +620,293 @@ const SW_CAT_MAP = {
 
 const SKIP_WORDS = ['pago','prestamo','préstamo','saldo total','a favor'];
 
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-
-// ── STATE ────────────────────────────────────────────────────────────────────
 let allEntries = [];
 let selectedCat = null;
 let currentMonth = new Date().getMonth();
 let currentYear  = new Date().getFullYear();
-let sheetReady   = false;
-let headerRowCount = 1; // rows used by header
+let API_KEY = '';
+let SHEET_ID = '';
 
-// ── SHEETS API ───────────────────────────────────────────────────────────────
+// ── SETUP ─────────────────────────────────────────────────────────────────────
+function init() {
+  API_KEY  = localStorage.getItem('budget_api_key') || '';
+  SHEET_ID = localStorage.getItem('budget_sheet_id') || '';
+
+  if (!API_KEY || !SHEET_ID) {
+    document.getElementById('setup-screen').style.display = 'flex';
+  } else {
+    showApp();
+  }
+}
+
+function saveSetup() {
+  const key     = document.getElementById('setup-api-key').value.trim();
+  const sheetId = document.getElementById('setup-sheet-id').value.trim();
+  if (!key || !sheetId) { showToast('Fill in both fields','err'); return; }
+  localStorage.setItem('budget_api_key', key);
+  localStorage.setItem('budget_sheet_id', sheetId);
+  API_KEY  = key;
+  SHEET_ID = sheetId;
+  showApp();
+}
+
+function showApp() {
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('main-app').style.display = 'block';
+  buildCatGrid();
+  initDate();
+  updateSettingsPreview();
+  initSheet();
+}
+
+function resetSetup() {
+  document.getElementById('main-app').style.display = 'none';
+  document.getElementById('setup-screen').style.display = 'flex';
+  document.getElementById('setup-api-key').value = API_KEY;
+  document.getElementById('setup-sheet-id').value = SHEET_ID;
+}
+
+function clearAll() {
+  if (!confirm('Reset all settings?')) return;
+  localStorage.removeItem('budget_api_key');
+  localStorage.removeItem('budget_sheet_id');
+  location.reload();
+}
+
+function openSheet() {
+  window.open(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit`, '_blank');
+}
+
+function updateSettingsPreview() {
+  document.getElementById('settings-key-preview').textContent = API_KEY ? API_KEY.slice(0,8) + '...' + API_KEY.slice(-4) : '—';
+  document.getElementById('settings-sheet-preview').textContent = SHEET_ID ? SHEET_ID.slice(0,12) + '...' : '—';
+}
+
+// ── SHEETS API ────────────────────────────────────────────────────────────────
+function base() { return `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}`; }
+
 async function sheetsGet(range) {
-  const url = `${BASE}/values/${encodeURIComponent(range)}?key=${API_KEY}`;
-  const r = await fetch(url);
-  if (!r.ok) throw new Error(`GET failed: ${r.status}`);
+  const r = await fetch(`${base()}/values/${encodeURIComponent(range)}?key=${API_KEY}`);
+  if (!r.ok) throw new Error(`GET ${r.status}`);
   return r.json();
 }
 
 async function sheetsAppend(range, values) {
-  const url = `${BASE}/values/${encodeURIComponent(range)}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS&key=${API_KEY}`;
-  const r = await fetch(url, {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
+  const r = await fetch(`${base()}/values/${encodeURIComponent(range)}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS&key=${API_KEY}`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({ values })
   });
   if (!r.ok) { const e = await r.json(); throw new Error(e.error?.message || r.status); }
   return r.json();
 }
 
-async function sheetsClear(range) {
-  const url = `${BASE}/values/${encodeURIComponent(range)}:clear?key=${API_KEY}`;
-  const r = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'} });
-  if (!r.ok) throw new Error(`Clear failed: ${r.status}`);
-  return r.json();
-}
-
 async function sheetsUpdate(range, values) {
-  const url = `${BASE}/values/${encodeURIComponent(range)}?valueInputOption=RAW&key=${API_KEY}`;
-  const r = await fetch(url, {
-    method:'PUT',
-    headers:{'Content-Type':'application/json'},
+  const r = await fetch(`${base()}/values/${encodeURIComponent(range)}?valueInputOption=RAW&key=${API_KEY}`, {
+    method:'PUT', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({ values })
   });
-  if (!r.ok) throw new Error(`Update failed: ${r.status}`);
+  if (!r.ok) throw new Error(`Update ${r.status}`);
   return r.json();
 }
 
-// ── INIT SHEET ───────────────────────────────────────────────────────────────
+// ── INIT SHEET ────────────────────────────────────────────────────────────────
 async function initSheet() {
-  setStatus('loading','Connecting to Sheet…');
+  setStatus('loading','Connecting…');
   try {
     const data = await sheetsGet(`${SHEET_NAME}!A1:G1`);
-    const row = data.values?.[0];
-    if (!row || row[0] !== 'ID') {
-      // Write header
-      await sheetsUpdate(`${SHEET_NAME}!A1:G1`, [
-        ['ID','Date','Amount','Currency','Description','Category','Source']
-      ]);
+    if (!data.values?.[0] || data.values[0][0] !== 'ID') {
+      await sheetsUpdate(`${SHEET_NAME}!A1:G1`, [['ID','Date','Amount','Currency','Description','Category','Source']]);
     }
-    sheetReady = true;
     await loadEntries();
     setStatus('ok','Connected to Google Sheet');
   } catch(e) {
-    setStatus('err','Could not connect — check API key & sharing');
+    setStatus('err','Could not connect — check API key');
     console.error(e);
   }
 }
 
-// ── LOAD ─────────────────────────────────────────────────────────────────────
 async function loadEntries() {
-  try {
-    const data = await sheetsGet(`${SHEET_NAME}!A2:G1000`);
-    const rows = data.values || [];
-    allEntries = rows.map((r,i) => ({
-      rowIndex: i + 2, // 1-indexed, row 1 is header
-      id:       r[0] || '',
-      date:     r[1] || '',
-      amount:   parseFloat(r[2]) || 0,
-      currency: r[3] || 'MXN',
-      desc:     r[4] || '',
-      category: r[5] || 'shopping',
-      source:   r[6] || 'personal',
-    }));
-    renderHome();
-    renderEntries();
-  } catch(e) {
-    console.error('Load error', e);
-  }
+  const data = await sheetsGet(`${SHEET_NAME}!A2:G1000`);
+  allEntries = (data.values||[]).map((r,i) => ({
+    rowIndex: i+2,
+    id: r[0]||'', date: r[1]||'',
+    amount: parseFloat(r[2])||0,
+    currency: r[3]||'MXN',
+    desc: r[4]||'',
+    category: r[5]||'shopping',
+    source: r[6]||'personal',
+  }));
+  renderHome();
+  renderEntries();
 }
 
-// ── LOG SPEND ─────────────────────────────────────────────────────────────────
+// ── LOG ───────────────────────────────────────────────────────────────────────
 async function logSpend() {
   const amount   = parseFloat(document.getElementById('amount-input').value);
   const currency = document.getElementById('currency-select').value;
   const date     = document.getElementById('date-input').value;
   const desc     = document.getElementById('desc-input').value.trim();
-  const notes    = document.getElementById('notes-input').value.trim();
 
-  if (!amount || amount <= 0) { showToast('Enter an amount','err'); return; }
-  if (!desc)                   { showToast('Add a description','err'); return; }
-  if (!selectedCat)            { showToast('Pick a category','err'); return; }
-  if (!date)                   { showToast('Pick a date','err'); return; }
-  if (!sheetReady)             { showToast('Sheet not connected','err'); return; }
+  if (!amount||amount<=0) { showToast('Enter an amount','err'); return; }
+  if (!desc)              { showToast('Add a description','err'); return; }
+  if (!selectedCat)       { showToast('Pick a category','err'); return; }
+  if (!date)              { showToast('Pick a date','err'); return; }
 
   const btn = document.getElementById('save-btn');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>Saving…';
 
-  const id = Date.now().toString();
-  const catLabel = notes ? `${selectedCat}` : selectedCat;
-
   try {
-    await sheetsAppend(`${SHEET_NAME}!A:G`, [
-      [id, date, amount, currency, desc, selectedCat, 'personal']
-    ]);
+    await sheetsAppend(`${SHEET_NAME}!A:G`, [[Date.now().toString(), date, amount, currency, desc, selectedCat, 'personal']]);
     showToast('Saved ✓');
-    // Reset form
     document.getElementById('amount-input').value = '';
     document.getElementById('desc-input').value = '';
     document.getElementById('notes-input').value = '';
     selectedCat = null;
-    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));
     initDate();
     await loadEntries();
   } catch(e) {
-    showToast('Save failed — ' + e.message, 'err');
-    console.error(e);
+    showToast('Save failed: ' + e.message,'err');
   } finally {
     btn.disabled = false;
     btn.innerHTML = 'Save Spend';
   }
 }
 
-// ── DELETE ───────────────────────────────────────────────────────────────────
 async function deleteEntry(rowIndex) {
   if (!confirm('Delete this entry?')) return;
   try {
-    // Clear the row content (can't delete rows easily via Sheets API v4 values, so blank it)
     await sheetsUpdate(`${SHEET_NAME}!A${rowIndex}:G${rowIndex}`, [['','','','','','','']]);
     showToast('Deleted');
     await loadEntries();
-  } catch(e) {
-    showToast('Delete failed','err');
-    console.error(e);
-  }
+  } catch(e) { showToast('Delete failed','err'); }
 }
 
-// ── SPLITWISE IMPORT ──────────────────────────────────────────────────────────
+// ── IMPORT ────────────────────────────────────────────────────────────────────
 function importCSV(input) {
   const file = input.files[0];
   if (!file) return;
   const reader = new FileReader();
   reader.onload = async e => {
-    const text = e.target.result;
     const myName = document.getElementById('sw-name-input').value.trim().toLowerCase();
-    const lines = text.split('\n').map(l => l.trim()).filter(l => l);
-
-    const headerLine = lines.find(l => l.toLowerCase().includes('fecha') || l.toLowerCase().includes('date'));
+    const lines = e.target.result.split('\n').map(l=>l.trim()).filter(l=>l);
+    const headerLine = lines.find(l=>l.toLowerCase().includes('fecha')||l.toLowerCase().includes('date'));
     if (!headerLine) { showToast('Could not parse CSV','err'); return; }
 
-    const headers = headerLine.split(',').map(h => h.trim());
-    const dateIdx = headers.findIndex(h => h.toLowerCase() === 'fecha' || h.toLowerCase() === 'date');
-    const descIdx = headers.findIndex(h => h.toLowerCase().includes('descripci') || h.toLowerCase() === 'description');
-    const catIdx  = headers.findIndex(h => h.toLowerCase().includes('categor'));
-    const currIdx = headers.findIndex(h => h.toLowerCase() === 'moneda' || h.toLowerCase() === 'currency');
-    const myIdx   = headers.findIndex(h => h.toLowerCase().includes(myName));
+    const headers = headerLine.split(',').map(h=>h.trim());
+    const dateIdx = headers.findIndex(h=>h.toLowerCase()==='fecha'||h.toLowerCase()==='date');
+    const descIdx = headers.findIndex(h=>h.toLowerCase().includes('descripci')||h.toLowerCase()==='description');
+    const catIdx  = headers.findIndex(h=>h.toLowerCase().includes('categor'));
+    const currIdx = headers.findIndex(h=>h.toLowerCase()==='moneda'||h.toLowerCase()==='currency');
+    const myIdx   = headers.findIndex(h=>h.toLowerCase().includes(myName));
 
-    if (myIdx === -1) { showToast(`Column "${myName}" not found`,'err'); return; }
+    if (myIdx===-1) { showToast(`Column "${myName}" not found`,'err'); return; }
 
-    const newRows = [];
-    const preview = [];
-
+    const newRows = [], preview = [];
     lines.forEach(line => {
-      if (line === headerLine) return;
+      if (line===headerLine) return;
       const cols = line.split(',');
-      if (cols.length < 4) return;
-
-      const date    = cols[dateIdx]?.trim();
-      const desc    = cols[descIdx]?.trim() || '';
-      const catRaw  = cols[catIdx]?.trim().toLowerCase() || '';
-      const currency = cols[currIdx]?.trim() || 'MXN';
-      const myShareRaw = parseFloat(cols[myIdx]?.trim());
-
-      if (!date || isNaN(myShareRaw)) return;
-
-      const descLow = desc.toLowerCase();
-      if (SKIP_WORDS.some(s => descLow.includes(s))) return;
-
-      const myShare = Math.abs(myShareRaw);
-      if (myShare === 0) return;
-
-      // Deduplicate against existing entries
-      const exists = allEntries.some(en =>
-        en.source === 'splitwise' && en.date === date && en.desc === desc && Math.abs(en.amount - myShare) < 0.01
-      );
+      if (cols.length<4) return;
+      const date=cols[dateIdx]?.trim(), desc=cols[descIdx]?.trim()||'';
+      const currency=cols[currIdx]?.trim()||'MXN';
+      const myShareRaw=parseFloat(cols[myIdx]?.trim());
+      if (!date||isNaN(myShareRaw)) return;
+      if (SKIP_WORDS.some(s=>desc.toLowerCase().includes(s))) return;
+      const myShare=Math.abs(myShareRaw);
+      if (myShare===0) return;
+      const exists=allEntries.some(en=>en.source==='splitwise'&&en.date===date&&en.desc===desc&&Math.abs(en.amount-myShare)<0.01);
       if (exists) return;
-
-      const cat = SW_CAT_MAP[catRaw] || 'shopping';
-      const id  = `sw_${date}_${Math.random().toString(36).slice(2,7)}`;
-      newRows.push([id, date, myShare, currency, desc, cat, 'splitwise']);
-      preview.push({ date, desc, amount: myShare, currency, cat });
+      const cat=SW_CAT_MAP[cols[catIdx]?.trim().toLowerCase()]||'shopping';
+      const id=`sw_${date}_${Math.random().toString(36).slice(2,7)}`;
+      newRows.push([id,date,myShare,currency,desc,cat,'splitwise']);
+      preview.push({date,desc,amount:myShare,currency,cat});
     });
 
-    if (newRows.length === 0) {
-      showToast('Nothing new to import');
-      input.value = '';
-      return;
-    }
-
-    const btn = document.querySelector('#page-import .import-btn');
-    btn.textContent = '⏳ Importing…';
+    if (!newRows.length) { showToast('Nothing new to import'); input.value=''; return; }
 
     try {
       await sheetsAppend(`${SHEET_NAME}!A:G`, newRows);
       showToast(`Imported ${newRows.length} entries`);
       await loadEntries();
-
-      // Preview
-      const previewEl = document.getElementById('import-preview');
-      previewEl.style.display = 'block';
-      document.getElementById('import-preview-content').innerHTML =
-        preview.slice(0,8).map(e => `
-          <div class="preview-row">
-            <div class="preview-left">
-              <span>${catEmoji(e.cat)}</span>
-              <div><div class="preview-desc">${e.desc}</div><div class="preview-date">${e.date}</div></div>
-            </div>
-            <div class="preview-amt">${e.currency} ${fmt(e.amount)}</div>
-          </div>
-        `).join('') +
-        (preview.length > 8 ? `<div style="color:var(--muted);font-size:12px;text-align:center;padding:10px;">+ ${preview.length-8} more</div>` : '');
-    } catch(err) {
-      showToast('Import failed: ' + err.message, 'err');
-    } finally {
-      btn.textContent = '📂 Upload Splitwise CSV';
-      input.value = '';
-    }
+      const previewEl=document.getElementById('import-preview');
+      previewEl.style.display='block';
+      document.getElementById('import-preview-content').innerHTML=
+        preview.slice(0,8).map(e=>`<div class="preview-row"><div class="preview-left"><span>${catEmoji(e.cat)}</span><div><div class="preview-desc">${e.desc}</div><div class="preview-date">${e.date}</div></div></div><div class="preview-amt">${e.currency} ${fmt(e.amount)}</div></div>`).join('')+
+        (preview.length>8?`<div style="color:var(--muted);font-size:12px;text-align:center;padding:10px;">+ ${preview.length-8} more</div>`:'');
+    } catch(err) { showToast('Import failed: '+err.message,'err'); }
+    input.value='';
   };
   reader.readAsText(file);
 }
 
-// ── RENDER HOME ───────────────────────────────────────────────────────────────
+// ── RENDER ────────────────────────────────────────────────────────────────────
 function renderHome() {
-  const now = new Date();
-  const mo = now.getMonth(), yr = now.getFullYear();
-  document.getElementById('home-title').textContent = `${MONTHS[mo]} ${yr}`;
+  const now=new Date(), mo=now.getMonth(), yr=now.getFullYear();
+  document.getElementById('home-title').textContent=`${MONTHS[mo]} ${yr}`;
+  const all=monthEntries(mo,yr);
+  const personal=all.filter(e=>e.source==='personal');
+  const sw=all.filter(e=>e.source==='splitwise');
+  const sumP=personal.reduce((s,e)=>s+e.amount,0);
+  const sumS=sw.reduce((s,e)=>s+e.amount,0);
+  const total=sumP+sumS;
+  document.getElementById('stat-personal').innerHTML=`<span>MXN </span>${fmt(sumP)}`;
+  document.getElementById('stat-personal-count').textContent=`${personal.length} entries`;
+  document.getElementById('stat-splitwise').innerHTML=`<span>MXN </span>${fmt(sumS)}`;
+  document.getElementById('stat-splitwise-count').textContent=`${sw.length} entries`;
+  document.getElementById('stat-total').innerHTML=`<span>MXN </span>${fmt(total)}`;
+  document.getElementById('stat-total-sub').textContent=`${all.length} total entries`;
 
-  const all      = monthEntries(mo, yr);
-  const personal = all.filter(e => e.source === 'personal');
-  const sw       = all.filter(e => e.source === 'splitwise');
-  const sumP     = personal.reduce((s,e) => s + e.amount, 0);
-  const sumS     = sw.reduce((s,e) => s + e.amount, 0);
-  const total    = sumP + sumS;
+  const byCat={};
+  all.forEach(e=>{byCat[e.category]=(byCat[e.category]||0)+e.amount;});
+  const sorted=Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
+  const max=sorted[0]?.[1]||1;
 
-  document.getElementById('stat-personal').innerHTML       = `<span>MXN </span>${fmt(sumP)}`;
-  document.getElementById('stat-personal-count').textContent = `${personal.length} entries`;
-  document.getElementById('stat-splitwise').innerHTML      = `<span>MXN </span>${fmt(sumS)}`;
-  document.getElementById('stat-splitwise-count').textContent = `${sw.length} entries`;
-  document.getElementById('stat-total').innerHTML          = `<span>MXN </span>${fmt(total)}`;
-  document.getElementById('stat-total-sub').textContent    = `${all.length} total entries`;
-
-  // Category breakdown
-  const byCat = {};
-  all.forEach(e => { byCat[e.category] = (byCat[e.category]||0) + e.amount; });
-  const sorted = Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
-  const max = sorted[0]?.[1] || 1;
-
-  const bc = document.getElementById('bar-chart');
-  bc.innerHTML = sorted.length ? sorted.map(([cat,amt]) => `
+  document.getElementById('bar-chart').innerHTML=sorted.length?sorted.map(([cat,amt])=>`
     <div class="bar-row">
       <div class="bar-label">${catEmoji(cat)} ${catName(cat)}</div>
       <div class="bar-track"><div class="bar-fill" style="width:${(amt/max*100).toFixed(1)}%;background:${catColor(cat)}"></div></div>
       <div class="bar-amount">${fmt(amt)}</div>
-    </div>
-  `).join('') : '<div style="color:var(--muted);font-size:13px;text-align:center;padding:10px;">No data yet</div>';
+    </div>`).join(''):'<div style="color:var(--muted);font-size:13px;text-align:center;padding:10px;">No data yet</div>';
 
-  drawDonut(sorted, total);
-
-  document.getElementById('donut-legend').innerHTML = sorted.slice(0,8).map(([cat,amt]) => `
+  drawDonut(sorted,total);
+  document.getElementById('donut-legend').innerHTML=sorted.slice(0,8).map(([cat,amt])=>`
     <div class="legend-item">
       <div class="legend-dot" style="background:${catColor(cat)}"></div>
       <span class="legend-name">${catName(cat)}</span>
       <span class="legend-pct">${total>0?Math.round(amt/total*100):0}%</span>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-function drawDonut(sorted, total) {
-  const canvas = document.getElementById('donut-canvas');
-  const ctx = canvas.getContext('2d');
-  const W=160, cx=80, cy=80, R=68, r=44;
+function drawDonut(sorted,total) {
+  const canvas=document.getElementById('donut-canvas');
+  const ctx=canvas.getContext('2d');
+  const W=160,cx=80,cy=80,R=68,r=44;
   ctx.clearRect(0,0,W,W);
-  if (!total) {
-    ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.arc(cx,cy,r,0,Math.PI*2,true);
-    ctx.fillStyle='#2e2e2e'; ctx.fill(); return;
-  }
-  let angle = -Math.PI/2;
-  sorted.forEach(([cat,amt]) => {
-    const slice = (amt/total)*Math.PI*2;
-    ctx.beginPath(); ctx.arc(cx,cy,R,angle,angle+slice); ctx.arc(cx,cy,r,angle+slice,angle,true);
-    ctx.closePath(); ctx.fillStyle=catColor(cat); ctx.fill();
-    angle += slice;
+  if(!total){ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.arc(cx,cy,r,0,Math.PI*2,true);ctx.fillStyle='#2e2e2e';ctx.fill();return;}
+  let angle=-Math.PI/2;
+  sorted.forEach(([cat,amt])=>{
+    const slice=(amt/total)*Math.PI*2;
+    ctx.beginPath();ctx.arc(cx,cy,R,angle,angle+slice);ctx.arc(cx,cy,r,angle+slice,angle,true);
+    ctx.closePath();ctx.fillStyle=catColor(cat);ctx.fill();
+    angle+=slice;
   });
-  ctx.fillStyle='#f0ede8';
-  ctx.font='500 12px DM Sans,sans-serif';
-  ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText('MXN '+fmt(total), cx, cy);
+  ctx.fillStyle='#f0ede8';ctx.font='500 12px DM Sans,sans-serif';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('MXN '+fmt(total),cx,cy);
 }
 
-// ── RENDER ENTRIES ────────────────────────────────────────────────────────────
 function renderEntries() {
-  document.getElementById('entries-month-label').textContent = `${MONTHS[currentMonth]} ${currentYear}`;
-  const all      = monthEntries(currentMonth, currentYear);
-  const personal = all.filter(e=>e.source==='personal').sort((a,b)=>b.date.localeCompare(a.date));
-  const sw       = all.filter(e=>e.source==='splitwise').sort((a,b)=>b.date.localeCompare(a.date));
-  renderList('personal-list', personal);
-  renderList('splitwise-list', sw);
+  document.getElementById('entries-month-label').textContent=`${MONTHS[currentMonth]} ${currentYear}`;
+  const all=monthEntries(currentMonth,currentYear);
+  renderList('personal-list',all.filter(e=>e.source==='personal').sort((a,b)=>b.date.localeCompare(a.date)));
+  renderList('splitwise-list',all.filter(e=>e.source==='splitwise').sort((a,b)=>b.date.localeCompare(a.date)));
 }
 
-function renderList(elId, list) {
-  const el = document.getElementById(elId);
-  if (!list.length) {
-    el.innerHTML = '<div class="empty"><div class="icon">🌵</div>Nothing here yet</div>'; return;
-  }
-  el.innerHTML = list.map(e => `
+function renderList(elId,list) {
+  const el=document.getElementById(elId);
+  if(!list.length){el.innerHTML='<div class="empty"><div class="icon">🌵</div>Nothing here yet</div>';return;}
+  el.innerHTML=list.map(e=>`
     <div class="entry-item">
       <div class="entry-dot" style="background:${catColor(e.category)}"></div>
       <div class="entry-info">
@@ -807,80 +915,60 @@ function renderList(elId, list) {
       </div>
       <div class="entry-amount ${e.source==='splitwise'?'sw':''}">${e.currency} ${fmt(e.amount)}</div>
       <button class="entry-delete" onclick="deleteEntry(${e.rowIndex})">×</button>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 function changeMonth(dir) {
-  currentMonth += dir;
-  if (currentMonth < 0) { currentMonth=11; currentYear--; }
-  if (currentMonth > 11) { currentMonth=0; currentYear++; }
+  currentMonth+=dir;
+  if(currentMonth<0){currentMonth=11;currentYear--;}
+  if(currentMonth>11){currentMonth=0;currentYear++;}
   renderEntries();
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
-function monthEntries(mo, yr) {
-  return allEntries.filter(e => {
-    if (!e.date || !e.amount) return false;
-    const d = new Date(e.date);
-    return d.getMonth()===mo && d.getFullYear()===yr;
-  });
-}
+function monthEntries(mo,yr){return allEntries.filter(e=>{if(!e.date||!e.amount)return false;const d=new Date(e.date);return d.getMonth()===mo&&d.getFullYear()===yr;});}
+function catColor(id){return(CATEGORIES.find(c=>c.id===id)||{color:'#6b6b6b'}).color;}
+function catEmoji(id){return(CATEGORIES.find(c=>c.id===id)||{emoji:'❓'}).emoji;}
+function catName(id){return(CATEGORIES.find(c=>c.id===id)||{name:id}).name;}
+function fmt(n){return Math.round(n).toLocaleString('en-US');}
 
-function catColor(id) { return (CATEGORIES.find(c=>c.id===id)||{color:'#6b6b6b'}).color; }
-function catEmoji(id) { return (CATEGORIES.find(c=>c.id===id)||{emoji:'❓'}).emoji; }
-function catName(id)  { return (CATEGORIES.find(c=>c.id===id)||{name:id}).name; }
-function fmt(n) { return Math.round(n).toLocaleString('en-US'); }
-
-function showPage(id, btn) {
+function showPage(id,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  if (btn) btn.classList.add('active');
-  if (id==='home') renderHome();
-  if (id==='entries') renderEntries();
+  if(btn)btn.classList.add('active');
+  if(id==='home')renderHome();
+  if(id==='entries')renderEntries();
 }
 
-function setStatus(state, msg) {
-  const dot = document.getElementById('home-dot');
-  dot.className = 'status-dot ' + state;
-  document.getElementById('home-status').textContent = msg;
+function setStatus(state,msg){
+  document.getElementById('home-dot').className='status-dot '+state;
+  document.getElementById('home-status').textContent=msg;
 }
 
-function showToast(msg, type='') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast' + (type?' '+type:'');
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2500);
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast'+(type?' '+type:'');
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);
 }
 
-function buildCatGrid() {
-  const grid = document.getElementById('cat-grid');
-  CATEGORIES.forEach(cat => {
-    const btn = document.createElement('button');
-    btn.className = 'cat-btn';
-    btn.dataset.id = cat.id;
-    btn.innerHTML = `<span class="emoji">${cat.emoji}</span><span class="name">${cat.name}</span>`;
-    btn.onclick = () => {
-      selectedCat = cat.id;
-      document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));
-      btn.classList.add('selected');
-    };
+function buildCatGrid(){
+  const grid=document.getElementById('cat-grid');
+  CATEGORIES.forEach(cat=>{
+    const btn=document.createElement('button');
+    btn.className='cat-btn';btn.dataset.id=cat.id;
+    btn.innerHTML=`<span class="emoji">${cat.emoji}</span><span class="name">${cat.name}</span>`;
+    btn.onclick=()=>{selectedCat=cat.id;document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');};
     grid.appendChild(btn);
   });
 }
 
-function initDate() {
-  const d = new Date();
-  const pad = n => String(n).padStart(2,'0');
-  document.getElementById('date-input').value = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+function initDate(){
+  const d=new Date(),pad=n=>String(n).padStart(2,'0');
+  document.getElementById('date-input').value=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 }
 
-// ── START ─────────────────────────────────────────────────────────────────────
-buildCatGrid();
-initDate();
-initSheet();
+init();
 </script>
 </body>
 </html>
